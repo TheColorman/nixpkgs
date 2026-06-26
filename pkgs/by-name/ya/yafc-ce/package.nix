@@ -21,6 +21,16 @@ buildDotnetModule (finalAttrs: {
     hash = "sha256-O4ldYVfOgq+0lZ7xWtBATzx/xlmz3tydC+YX/fvVgY4=";
   };
 
+  patchPhase = ''
+    runHook prePatch
+
+    substituteInPlace Yafc/Yafc.csproj \
+      --replace-fail "Condition=\"'\$(RuntimeIdentifier)' == 'osx-x64'\"" "Condition=\"false\"" \
+      --replace-fail "Condition=\"'\$(RuntimeIdentifier)' == 'osx-arm64'\"" "Condition=\"false\""
+
+    runHook postPatch
+  '';
+
   projectFile = [
     "Yafc.I18n.Generator/Yafc.I18n.Generator.csproj"
     "Yafc/Yafc.csproj"
